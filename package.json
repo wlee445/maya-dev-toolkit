@@ -4,7 +4,8 @@
   "description": "Autodesk Maya Dev Toolkit",
   "publisher": "Cx-Game",
   "repository":"https://github.com/wlee445/maya-dev-toolkit",
-  "version": "0.0.3",
+  "icon": "./icon.png",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.95.0"
   },
