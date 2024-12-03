@@ -1,0 +1,166 @@
+{
+  "name": "maya-dev-toolkit",
+  "displayName": "Maya Dev Toolkit",
+  "description": "Autodesk Maya Dev Toolkit",
+  "publisher": "Cx-Game",
+  "version": "0.0.2",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Extension Packs",
+		"Snippets",
+    "Other"
+  ],
+  "keywords": [
+		"python",
+		"maya",
+		"debugger",
+		"autodesk maya",
+		"OpenMaya",
+		"pymel",
+		"cmds",
+		"mel"
+	],
+  "activationEvents": [
+    "onLanguage:python"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "maya-dev-toolkit.SendToMaya",
+        "title": "Send To Maya"
+      },
+      {
+        "command": "maya-dev-toolkit.MayaPythonDebugger",
+        "title": "Maya Python Debugger"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "maya-dev-toolkit.SendToMaya",
+          "when": "(resourceLangId == mayamel) || (resourceLangId == python)"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "maya-dev-toolkit.SendToMaya",
+          "group": "group1",
+          "when": "(resourceLangId == mayamel) || (resourceLangId == python)"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "maya-dev-toolkit.SendToMaya",
+        "key": "ctrl+alt+F5",
+        "when": "(resourceLangId == mayamel || python) && editorTextFocus"
+      },
+      {
+        "command": "maya-dev-toolkit.MayaPythonDebugger",
+        "key": "ctrl+alt+p"
+      }
+    ],
+    "languages": [
+      {
+        "id": "mayamel",
+        "aliases": [
+          "Maya Mel",
+          "maya mel"
+        ],
+        "extensions": [
+          ".mel"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "mayamel",
+        "scopeName": "source.mayamel",
+        "path": "./syntaxes/mayamel.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "Maya Dev Toolkit Settings",
+      "properties": {
+        "maya.code.MelCompletionPath": {
+          "type": "string",
+          "default": "",
+          "description": "官网上下载开发者包，指认自动补全的路径 \r\n eg : ../devkitBase/devkit/other/docs"
+        },
+        "maya.code.ExtendLibPath": {
+          "type": "string",
+          "default": "",
+          "description": "Maya 安装路径下的 Python site-packages \r\n eg : C:\\Program Files\\Autodesk\\Maya2025\\Python\\Lib\\site-packages"
+        },
+        "maya.code.CommandPort": {
+          "type": "integer",
+          "default": 4648,
+          "description": "复制以下代码到 Maya Script Editor （Python）运行\r\n\r\nimport maya.cmds as cmds\r\nif not cmds.commandPort(\":4648\",q=True):cmds.commandPort(n=\":4648\",stp=\"mel\",echoOutput=True)"
+        }
+      }
+    },
+    "debuggers": [
+      {
+        "type": "debugpy",
+        "label": "Maya Python Debugger",
+        "languages":["python"],
+        "configurationAttributes": {
+          "launch":{
+            "required": [ "attach" ]
+          }
+        },
+        "initialConfigurations": [{
+          "type":"debugpy",
+          "request": "attach",
+          "name": "Maya Python Debugger: Attach using Process Id",
+          "processId": "${command:pickProcess}"
+        }],
+				"configurationSnippets": [{
+          "label": "Maya Python Debugger: Attach using Process Id",
+          "description": "A debug configuration for attaching to a running maya program.",
+          "body": {
+            "type": "debugpy",
+            "request": "attach",
+            "name": "Maya Python Debugger: Attach using Process Id",
+            "processId": "${command:pickProcess}"
+          }
+        }],
+        "variables": {
+          "processId": "${command:pickProcess}"
+        }
+      }
+    ]
+  },
+  "extensionDependencies":[
+    "ms-python.python",
+    "ms-python.debugpy"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.9",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "net": "^1.0.2",
+    "turndown": "^7.2.0"
+  }
+}

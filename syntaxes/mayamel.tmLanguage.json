@@ -1,0 +1,175 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Maya Mel",
+	"patterns": [
+		{
+			"include": "#Keyword"
+		},
+		{
+			"include":"#Control"
+		},
+		{
+			"include":"#Types"
+		},
+		{
+			"include":"#Constants"
+		},
+		{
+			"include":"#Operators"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include":"#numeric"
+		},
+
+		{
+			"include":"#variable"
+		},
+		{
+			"name": "meta.function.mayamel",
+			"begin": "((?:global\\s*)?proc)\\s*(\\w+\\s*\\[?\\]?\\s+|\\s+)([A-Za-z_][A-Za-z0-9_]*)\\s*(\\()",
+			"end": "\\)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.mayamel"
+				},
+				"2": {
+					"name": "storage.type.mayamel"
+				},
+				"3": {
+					"name": "entity.name.function.mayamel"
+				},
+				"4": {
+					"name": "punctuation.section.function.mayamel"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.section.function.mayamel"
+				}
+			},
+			"patterns": [
+				{
+					"include": "$self"
+				}
+			]
+		},
+		{
+			"explanation": "Lambda Function",
+			"match": "(`.*`)",
+			"name": "meta.function.lambda.mayamel"
+		},
+		{
+			"explanation": "Block Comments",
+			"name": "comment.block.mayamel",
+			"begin": "/\\*",
+			"end": "\\*/",
+			"captures": {
+				"0": {
+					"name": "punctuation.definition.comment.mayamel"
+				}
+			}
+		},
+		{
+			"explanation": "Inline Comments",
+			"begin": "(^[ \t]+)?(?=//)",
+			"end": "(?!\\G)",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.whitespace.comment.leading.mayamel"
+				}
+			},
+			"patterns": [
+				{
+					"begin": "//",
+					"end": "(?=\\n)",
+					"name": "comment.line.double-slash.mayamel",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.mayamel"
+						}
+					}
+				}
+			]
+		},
+		{
+			"explanation": "Keyword (Operators)",
+			"name": "keyword.operator.symbolic.mayamel",
+			"match": "[-\\!\\%\\&\\*\\+\\=\\/\\?\\:]"
+		},
+		{
+			"explanation": "Quoted strings (Double)",
+			"name": "string.quoted.double.mayamel",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "string.quoted.double.mayamel",
+					"match": "\\\\."
+				}]
+		},
+		{
+			"explanation": "Quoted strings (Single)",
+			"name": "string.quoted.single.mel",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape.mel",
+					"match": "\\\\."
+				}
+			]
+		}
+
+	],
+	"repository": {
+		"Keyword": {
+			"patterns": [{
+				"name": "keyword.other.mayamel",
+				"match": "\\b(global|source)\\b"
+			}]
+		},
+		"Control": {
+			"patterns": [{
+				"name": "keyword.control.mayamel",
+				"match": "\\b(if|in|else|for|while|break|continue|case|default|do|switch|return|switch|case|catch|alias)\\b"
+			}]
+		},
+		"Constants": {
+			"patterns": [{
+				"name": "constant.language.mayamel",
+				"match":  "\\b(false|true|yes|no|on|off)\\b"
+			}]
+		},
+		"numeric": {
+			"name": "constant.numeric.mayamel",
+			"patterns": [
+				{
+					"name": "constant.numeric.mayamel",
+					"match": "\\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\\b"
+				}]
+		},
+		"Types": {
+			"name": "storage.type.mayamel",
+			"patterns": [
+				{
+					"name": "storage.type.mayamel",
+					"match":"\\b(matrix|string|vector|float|int|void)\\b"
+				}]
+		},
+		"variable": {
+			"name": "variable.other.mayamel",
+			"patterns": [
+				{
+					"name": "variable.other.mayamel",
+					"match": "(\\$)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*?\\b"
+				}]
+		}
+
+
+
+	},
+	"scopeName": "source.mayamel"
+}
