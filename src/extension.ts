@@ -29,6 +29,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (!extra_paths.includes(code_extend_lib_path)) {
         extra_paths.splice(0, 0, code_extend_lib_path);
         python_config.update("autoComplete.extraPaths", extra_paths, true);
+        python_config.update("analysis.extraPaths", extra_paths, true);
     }
 	
 	// 注册 maya mel 自动补充
