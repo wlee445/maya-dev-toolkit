@@ -14,7 +14,7 @@ export class MayaDebugToolkit{
         commandPort:number,
     ){
         this.commandPort = commandPort;
-        this.reconnect(commandPort)
+        // this.reconnect(commandPort)
     }
     private reconnect(commandPort:number){
         
