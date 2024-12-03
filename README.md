@@ -1,20 +1,20 @@
 # Autodesk Maya Dev Toolkit 
 ## **Mel syntax highlighting tips and autocomplete**
 > mel completion setting : download Maya devkit from [Maya developer center](https://www.autodesk.com/developer-network/platform-technologies/maya)
-> ![01_module](./data/mel_completion_setting.png)
-> ![01_module](./data/mel_auto_completion.gif)
+> ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/mel_completion_setting.png)
+> ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/mel_auto_completion.gif)
 ## **Maya Python extend lib path**
-> ![01_module](./data/python_extend_lib_path_setting.png)
+> ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/python_extend_lib_path_setting.png)
 ## **Send the current file to run in Maya with one click**
 > * Maya Port Setting 
-> ![01_module](./data/maya_port_setting.png)
+> ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/maya_port_setting.png)
 > * Right click `Send To Maya`
-> ![01_module](./data/send_to_maya.png)
+> ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/send_to_maya.png)
 > * Key short `Ctrl + Alt + F5`
-> ![01_module](./data/send_to_maya.gif)
+> ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/send_to_maya.gif)
 ## **Python breakpoint debugging for attach Maya processes**
 > Key short `Ctrl + Alt + p`
-> ![01_module](./data/maya_debug.gif)
+> ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/maya_debug.gif)
 
 ## Extensions Dependencies
 
