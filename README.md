@@ -31,6 +31,23 @@
 > * Key short `Ctrl + Alt + p`
 > ![01_module](https://github.com/wlee445/maya-dev-toolkit/raw/main/data/maya_debug.gif)
 
+## **Initializes the Maya development directory structure**
+Command : `Maya Initialize Development Directory Structure`
+```
+input ${project} and ${version}
+
+root-dir
+├-module
+│ └─${project}.mod
+├-sources
+| ├-scripts
+│ │ └-userSetup.py
+│ ├-shelves
+│ └-plug-ins
+│   └-${version}
+└-maya${version}.bat
+```
+
 ## Extensions Dependencies
 * [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) - Linting, Debugging (multi-threaded, remote), Intellisense, code formatting, refactoring, unit tests, snippets, Data Science (with Jupyter), PySpark and more.  
 * [Python Debuger](https://marketplace.visualstudio.com/items?itemName=ms-python.debugpy) - A Visual Studio Code extension that supports Python debugging with debugpy. Python Debugger provides a seamless debugging experience by allowing you to set breakpoints, step through code, inspect variables, and perform other essential debugging tasks. The debugpy extension offers debugging support for various types of Python applications including scripts, web applications, remote processes, and multi-threaded processes.

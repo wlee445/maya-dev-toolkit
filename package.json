@@ -5,7 +5,7 @@
   "publisher": "Cx-Game",
   "repository":"https://github.com/wlee445/maya-dev-toolkit",
   "icon": "./icon.png",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -26,6 +26,7 @@
 		"mel"
 	],
   "activationEvents": [
+    "onStartupFinished",
     "onLanguage:python"
   ],
   "main": "./out/extension.js",
@@ -38,6 +39,10 @@
       {
         "command": "maya-dev-toolkit.MayaPythonDebugger",
         "title": "Maya Python Debugger"
+      },
+      {
+        "command": "maya-dev-toolkit.MayaInitDevDir",
+        "title": "Maya Initialize Development Directory Structure"
       }
     ],
     "menus": {
@@ -87,8 +92,18 @@
       }
     ],
     "configuration": {
-      "title": "Maya Dev Toolkit Settings",
+      "title": "Maya Dev Toolkit",
       "properties": {
+        "maya.InstallRootDir": {
+          "type": "string",
+          "default": "C:\\Program Files\\Autodesk",
+          "description": "Maya 安装的根目录"
+        },
+        "maya.code.DevKitRootDir": {
+          "type": "string",
+          "default": "",
+          "description": "Maya DEVKIT 根目录. eg: ./DevKit/2025/devkitBase"
+        },
         "maya.code.MelCompletionPath": {
           "type": "string",
           "default": "",
@@ -103,6 +118,11 @@
           "type": "integer",
           "default": 4648,
           "description": "复制以下代码到 Maya Script Editor （Python）运行\r\n\r\nimport maya.cmds as cmds\r\nif not cmds.commandPort(\":4648\",q=True):cmds.commandPort(n=\":4648\",stp=\"mel\",echoOutput=True)"
+        },
+        "maya.log": {
+          "type": "boolean",
+          "default": 0,
+          "description": "启动插件时，自动打开 Output log"
         }
       }
     },

@@ -5,8 +5,7 @@ import * as path from "path";
 import * as mayamel from "./mayamel_toolkit";
 import * as maya_debug from "./maya_debug_toolkit";
 import * as log from "./log";
-
-
+import * as maya_setting from "./maya_setting"
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -16,22 +15,21 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "maya-dev-toolkit" is now active!');
 
-
 	// 获取 配置
-	const maya_config:vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
-	const code_completion_path :string = maya_config.get<string>("code.MelCompletionPath","");
-	const code_extend_lib_path :string = maya_config.get<string>("code.ExtendLibPath","");
-	const code_command_port :number = maya_config.get<number>("code.CommandPort",4648);
+	const maya_config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
+	const code_completion_path: string = maya_config.get<string>("code.MelCompletionPath", "");
+	const code_extend_lib_path: string = maya_config.get<string>("code.ExtendLibPath", "");
+	const code_command_port: number = maya_config.get<number>("code.CommandPort", 4648);
 
 	//  设置 Maya Python Extend Lib Path
 	let python_config = vscode.workspace.getConfiguration("python");
-    let extra_paths: string[] = python_config.get("autoComplete.extraPaths",[]);
-    if (!extra_paths.includes(code_extend_lib_path)) {
-        extra_paths.splice(0, 0, code_extend_lib_path);
-        python_config.update("autoComplete.extraPaths", extra_paths, true);
-        python_config.update("analysis.extraPaths", extra_paths, true);
-    }
-	
+	let extra_paths: string[] = python_config.get("autoComplete.extraPaths", []);
+	if (!extra_paths.includes(code_extend_lib_path)) {
+		extra_paths.splice(0, 0, code_extend_lib_path);
+		python_config.update("autoComplete.extraPaths", extra_paths, true);
+		python_config.update("analysis.extraPaths", extra_paths, true);
+	}
+
 	// 注册 maya mel 自动补充
 	vscode.languages.registerCompletionItemProvider(
 		"mayamel",
@@ -58,8 +56,16 @@ export function activate(context: vscode.ExtensionContext) {
 		mayaDebugToolkit.debugAttachProcessId()
 	});
 	context.subscriptions.push(disposable);
+	// 注册 初始化文件夹结构命令
+	disposable = vscode.commands.registerCommand('maya-dev-toolkit.MayaInitDevDir', () => {
+		new maya_setting.MayaInitializeDevDir(context.extensionPath);
+	});
+	context.subscriptions.push(disposable);
+
+
+
 
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

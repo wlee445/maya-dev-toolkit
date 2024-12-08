@@ -5,7 +5,11 @@ export class Logger {
     private outputChannel:vscode.OutputChannel;
     private constructor() {
         this.outputChannel = vscode.window.createOutputChannel("Maya Output")
-        this.outputChannel.show()
+        const maya_config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
+        if (maya_config.get<boolean>("log", false)) {
+            this.outputChannel.show()
+        }
+        
     }
     public static getInstance() : Logger {
         if (!Logger.instance) {
