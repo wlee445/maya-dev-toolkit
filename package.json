@@ -5,7 +5,7 @@
   "publisher": "Cx-Game",
   "repository":"https://github.com/wlee445/maya-dev-toolkit",
   "icon": "./icon.png",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.95.0"
   },
