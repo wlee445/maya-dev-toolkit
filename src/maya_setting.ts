@@ -31,9 +31,10 @@ function initDevDir(projectName: string | undefined, version: string[] | undefin
     let root_dir = vscode.workspace.workspaceFolders[0].uri.fsPath;
     let module_dir = path.join(root_dir, module_dir_name)
     let sources_dir = path.join(root_dir, "sources")
-    let scripts_dir = path.join(sources_dir, "scripts")
-    let shelves_dir = path.join(sources_dir, "shelves")
-    let plugins_dir = path.join(sources_dir, "plug-ins")
+    let project_path = path.join(sources_dir, projectName)
+    let scripts_dir = path.join(project_path, "scripts")
+    let shelves_dir = path.join(project_path, "shelves")
+    let plugins_dir = path.join(project_path, "plug-ins")
     let template_path = path.join(extensionPath, "resources", "template")
 
     const maya_config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
@@ -41,7 +42,7 @@ function initDevDir(projectName: string | undefined, version: string[] | undefin
     console.log(installRootDir_path)
 
     //  创建目录结构
-    let dir_array = [module_dir, sources_dir, scripts_dir, shelves_dir, plugins_dir]
+    let dir_array = [module_dir, sources_dir, project_path, scripts_dir, shelves_dir, plugins_dir]
     dir_array.forEach(element => {
         if (!fs.existsSync(element)) {
             fs.mkdirSync(element);
@@ -57,7 +58,7 @@ function initDevDir(projectName: string | undefined, version: string[] | undefin
     // 写 .mod 
 
     let mod_template_txt = `
-+ MAYAVERSION:<Version> PLATFORM:win64 <ModuleName> 0.0.1 ../sources
++ MAYAVERSION:<Version> PLATFORM:win64 <ModuleName> 0.0.1 ../sources/<ModuleName>
 plugins: ./<Version>
 scripts: ./`
 
@@ -87,14 +88,14 @@ START /d "<MayaInstallRootDir>\\Maya<Version>\\bin" maya.exe`
     });
 
     // 写 userSetup.py
+    let userSetup_template_txt = `
+import maya.utils
+maya.utils.executeDeferred("print('<ModuleName> userSetup.py')")`
     let userSetup_file_path = path.join(scripts_dir, "userSetup.py")
-    let template_userSetup = path.join(template_path, "userSetup.py")
-    if (!fs.existsSync(userSetup_file_path) && fs.existsSync(template_userSetup)) {
-        fs.readFile(template_userSetup, function (err, data) {
-            let template_txt = data.toString()
-            let to_write = template_txt.replaceAll("<ModuleName>", projectName)
-            fs.writeFileSync(userSetup_file_path, to_write)
-        })
+    if (!fs.existsSync(userSetup_file_path)) {
+        let to_write = userSetup_template_txt;
+        to_write = to_write.replaceAll("<ModuleName>", projectName);
+        fs.writeFileSync(userSetup_file_path, to_write);
     }
     vscode.window.showInformationMessage("Initialization Maya development directory structure Success ! ")
 }
@@ -122,6 +123,15 @@ export class MayaInitializeDevDir {
                         return;
                     }
                 }
+                // 检查 project name 是否已经存在
+                if (vscode.workspace.workspaceFolders) {
+                    let workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
+                    let projectPath = path.join(workspacePath, "sources", msg);
+                    if (fs.existsSync(projectPath)) {
+                        vscode.window.showErrorMessage(`Project "${msg}" already exists in sources folder.`);
+                        return;
+                    }
+                }
                 local_projectName = msg.replaceAll(" (Workspace)", "")
                 // 获取安装的 Maya 版本
                 const maya_config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
@@ -136,6 +146,11 @@ export class MayaInitializeDevDir {
                         }
                     }
                 });
+                // 如果没有找到 Maya 版本
+                if (selectMaya.length == 0) {
+                    vscode.window.showErrorMessage("Do not found Maya version in InstallRootDir, please check your configuration.");
+                    return;
+                }
                 vscode.window.showQuickPick(
                     selectMaya,
                     {

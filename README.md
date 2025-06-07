@@ -40,11 +40,12 @@ root-dir
 ├-module
 │ └─${project}.mod
 ├-sources
-| ├-scripts
-│ │ └-userSetup.py
-│ ├-shelves
-│ └-plug-ins
-│   └-${version}
+│ └─${project}
+|   ├-scripts
+│   │ └-userSetup.py
+│   ├-shelves
+│   └-plug-ins
+│     └-${version}
 └-maya${version}.bat
 ```
 
