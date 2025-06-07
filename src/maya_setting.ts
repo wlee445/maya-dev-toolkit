@@ -27,13 +27,18 @@ function initDevDir(projectName: string | undefined, version: string[] | undefin
     }
 
     // 处理路径
+    let module_dir_name = "modules";
     let root_dir = vscode.workspace.workspaceFolders[0].uri.fsPath;
-    let module_dir = path.join(root_dir, "module")
+    let module_dir = path.join(root_dir, module_dir_name)
     let sources_dir = path.join(root_dir, "sources")
     let scripts_dir = path.join(sources_dir, "scripts")
     let shelves_dir = path.join(sources_dir, "shelves")
     let plugins_dir = path.join(sources_dir, "plug-ins")
     let template_path = path.join(extensionPath, "resources", "template")
+
+    const maya_config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
+    let installRootDir_path: string = maya_config.get<string>("InstallRootDir", "");
+    console.log(installRootDir_path)
 
     //  创建目录结构
     let dir_array = [module_dir, sources_dir, scripts_dir, shelves_dir, plugins_dir]
@@ -50,51 +55,37 @@ function initDevDir(projectName: string | undefined, version: string[] | undefin
     });
 
     // 写 .mod 
-    let mod_file_path = path.join(module_dir, projectName + ".mod")
-    if (!fs.existsSync(mod_file_path)) {
-        let template_mod = path.join(template_path, "template.mod")
-        if (!fs.existsSync(template_mod)) {
-            vscode.window.showErrorMessage(`Path not exist : ${template_mod}`)
-            return;
-        }
-        fs.readFile(template_mod, function (err, data) {
-            let template_txt = data.toString()
-            let mod_txt = ""
-            version.forEach(element => {
-                let to_write = template_txt.replaceAll("<Version>", element)
-                to_write = to_write.replaceAll("<ModuleName>", projectName)
-                mod_txt += to_write
-                mod_txt += "\r\n"
-            });
-            fs.writeFileSync(path.join(module_dir, projectName + ".mod"), mod_txt)
-        })
-    }
+
+    let mod_template_txt = `
++ MAYAVERSION:<Version> PLATFORM:win64 <ModuleName> 0.0.1 ../sources
+plugins: ./<Version>
+scripts: ./`
+
+    let mod_txt = ""
+    version.forEach(element => {
+        let to_write = mod_template_txt
+        to_write = to_write.replaceAll("<Version>", element)
+        to_write = to_write.replaceAll("<ModuleName>", projectName)
+        mod_txt += to_write
+        mod_txt += "\r\n"
+    });
+    fs.writeFileSync(path.join(module_dir, projectName + ".mod"), mod_txt)
 
     // 写 启动 .bat
-    let template_bat = path.join(template_path, "template.bat")
-    if (!fs.existsSync(template_bat)) {
-        vscode.window.showErrorMessage(`Path not exist : ${template_bat}`)
-        return;
-    }
-    const maya_config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
-    let installRootDir_path: string = maya_config.get<string>("InstallRootDir", "");
-    console.log(installRootDir_path)
-    // installRootDir_path = "C:\\Program Files\\Autodesk"
-    if (!fs.existsSync(installRootDir_path)) {
-        vscode.window.showErrorMessage(`install Root Dir Path not exist : ${installRootDir_path}`)
-        return;
-    }
-    fs.readFile(template_bat, function (err, data) {
-        let template_txt = data.toString()
-        template_txt = template_txt.replaceAll("<MayaInstallRootDir>", installRootDir_path)
-        version.forEach(element => {
-            let bat_file_path = path.join(root_dir, `Maya${element}.bat`)
-            if (!fs.existsSync(bat_file_path)) {
-                let to_write = template_txt.replaceAll("<Version>", element)
-                fs.writeFileSync(path.join(root_dir, `Maya${element}.bat`), to_write)
-            }
-        });
-    })
+    let bat_template_txt = `
+SET MAYA_MODULE_PATH=%MAYA_MODULE_PATH%;%~dp0<ModuleDirName>
+START /d "<MayaInstallRootDir>\\Maya<Version>\\bin" maya.exe`
+
+    bat_template_txt = bat_template_txt.replaceAll("<ModuleDirName>", module_dir_name)    
+    bat_template_txt = bat_template_txt.replaceAll("<MayaInstallRootDir>", installRootDir_path)
+    version.forEach(element => {
+        let bat_file_path = path.join(root_dir, `Maya${element}.bat`)
+        if (!fs.existsSync(bat_file_path)) {
+            let to_write = bat_template_txt.replaceAll("<Version>", element)
+            fs.writeFileSync(path.join(root_dir, `Maya${element}.bat`), to_write)
+        }
+    });
+
     // 写 userSetup.py
     let userSetup_file_path = path.join(scripts_dir, "userSetup.py")
     let template_userSetup = path.join(template_path, "userSetup.py")
