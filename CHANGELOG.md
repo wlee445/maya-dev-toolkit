@@ -6,7 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [0.0.7]
+## [0.0.8]
 ### Added
 * launch.json 模板，包括 attach、connect
 ### Changed
