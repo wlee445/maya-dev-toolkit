@@ -56,6 +56,10 @@ export function activate(context: vscode.ExtensionContext) {
 		mayaDebugToolkit.debugAttachProcessId()
 	});
 	context.subscriptions.push(disposable);
+	// 注册 Maya Python Debugger configuration 命令
+	disposable = vscode.debug.registerDebugConfigurationProvider('maya-debugpy', new maya_debug.MayaDebugConfigurationProvider());
+	context.subscriptions.push(disposable);
+
 	// 注册 初始化文件夹结构命令
 	disposable = vscode.commands.registerCommand('maya-dev-toolkit.MayaInitDevDir', () => {
 		new maya_setting.MayaInitializeDevDir(context.extensionPath);

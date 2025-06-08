@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as net from "net";
 import * as log from "./log";
 
-var logger = log.Logger.getInstance()
+var logger = log.Logger.getInstance();
 
 export class MayaDebugToolkit{
     public commandPort :number;
@@ -100,4 +100,62 @@ else:
         };
         return vscode.debug.startDebugging(undefined, configuration);
     }
+}
+
+export class MayaDebugConfigurationProvider implements vscode.DebugConfigurationProvider {
+    
+    // 交互式初始化创建新配置时调用
+    provideDebugConfigurations(
+        folder: vscode.WorkspaceFolder | undefined,
+        token?: vscode.CancellationToken
+    ): vscode.ProviderResult<vscode.DebugConfiguration[]> {
+        // 暂时不做
+        return [];
+    }
+    // 当用户运行配置时调用
+    resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration, token?: vscode.CancellationToken): vscode.ProviderResult<vscode.DebugConfiguration> {
+        debugConfiguration.type = "debugpy";
+        
+        switch (debugConfiguration.request) {
+            case "attach": 
+                break;
+            case "connect":
+                debugConfiguration.request = "attach";
+                debugConfiguration.pathMappings = this.generatePathMappings();
+                break;
+            default:
+                break;
+        }
+    
+        return debugConfiguration;
+    }
+    // 处理变量替换
+    resolveDebugConfigurationWithSubstitutedVariables(folder: vscode.WorkspaceFolder | undefined, debugConfiguration: vscode.DebugConfiguration, token?: vscode.CancellationToken): vscode.ProviderResult<vscode.DebugConfiguration> {
+        // 暂时不做
+        return debugConfiguration;
+    }
+
+    private generatePathMappings(): { localRoot: string; remoteRoot: string }[] {
+        let local_path_mappings: { localRoot: string; remoteRoot: string }[] = [];
+        let root_dir = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
+            ? vscode.workspace.workspaceFolders[0].uri.fsPath
+            : "";
+        if (root_dir === "") {
+            return [];
+        };
+        let sources_dir = path.join(root_dir, "sources");
+        if (!fs.existsSync(sources_dir)) {
+            vscode.window.showErrorMessage(`Sources directory not found at ${sources_dir}`);
+            return [];
+        };
+        
+        fs.readdirSync(sources_dir).forEach((project) => {
+            local_path_mappings.push({
+                localRoot: `\${workspaceFolder}/sources/${project}/scripts/...`,
+                remoteRoot: "\${env:PYTHONPATH}/..." 
+            });
+        });
+        return local_path_mappings;
+    }
+
 }

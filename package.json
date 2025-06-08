@@ -3,7 +3,7 @@
   "displayName": "Maya Dev Toolkit",
   "description": "Autodesk Maya Dev Toolkit",
   "publisher": "Cx-Game",
-  "repository":"https://github.com/wlee445/maya-dev-toolkit",
+  "repository": "https://github.com/wlee445/maya-dev-toolkit",
   "icon": "./icon.png",
   "version": "0.0.7",
   "engines": {
@@ -12,21 +12,24 @@
   "categories": [
     "Programming Languages",
     "Extension Packs",
-		"Snippets",
+    "Snippets",
     "Other"
   ],
   "keywords": [
-		"python",
-		"maya",
-		"debugger",
-		"autodesk maya",
-		"OpenMaya",
-		"pymel",
-		"cmds",
-		"mel"
-	],
+    "python",
+    "maya",
+    "debugger",
+    "autodesk maya",
+    "OpenMaya",
+    "pymel",
+    "cmds",
+    "mel"
+  ],
   "activationEvents": [
     "onStartupFinished",
+    "onDebugInitialConfigurations",
+		"onDebugDynamicConfigurations:maya-debugpy",
+		"onDebugResolve:maya-debugpy",
     "onLanguage:python"
   ],
   "main": "./out/extension.js",
@@ -128,37 +131,135 @@
     },
     "debuggers": [
       {
-        "type": "debugpy",
+        "type": "maya-debugpy",
         "label": "Maya Python Debugger",
-        "languages":["python"],
+        "languages": [
+          "python"
+        ],
         "configurationAttributes": {
-          "launch":{
-            "required": [ "attach" ]
+          "launch": {
+            "properties": {
+              "version": {
+                "type": [
+                  "number",
+                  "string"
+                ],
+                "default": 2025,
+                "description": "The version of the Maya exe."
+              },
+              "connect": {
+								"label": "Attach by connecting to debugpy over a socket.",
+								"properties": {
+									"host": {
+										"default": "127.0.0.1",
+										"description": "Hostname or IP address to connect to.",
+										"type": "string"
+									},
+									"port": {
+										"description": "Port to connect to.",
+										"type": [
+											"number",
+											"string"
+										]
+									}
+								},
+								"required": [
+									"port"
+								],
+								"type": "object"
+							},
+              "autoPort": {
+                "type": "boolean",
+                "default": true,
+                "description": "Automatically assign a port for debugpy to connect on."
+              }
+            }
+          },
+          "connect": {
+            "properties": {
+              "connect": {
+								"label": "Attach by connecting to debugpy over a socket.",
+								"properties": {
+									"host": {
+										"default": "127.0.0.1",
+										"description": "Hostname or IP address to connect to.",
+										"type": "string"
+									},
+									"port": {
+										"description": "Port to connect to.",
+										"type": [
+											"number",
+											"string"
+										]
+									}
+								},
+								"required": [
+									"port"
+								],
+								"type": "object"
+							}
+            }
+          },
+          "attach":{
+            "properties": {
+              "processId": {
+								"anyOf": [
+									{
+										"default": "${command:pickProcess}",
+										"description": "Use process picker to select a process to attach, or Process ID as integer.",
+										"enum": [
+											"${command:pickProcess}"
+										]
+									},
+									{
+										"description": "ID of the local process to attach to.",
+										"type": "integer"
+									}
+								]
+							}
+            }
           }
         },
-        "initialConfigurations": [{
-          "type":"debugpy",
-          "request": "attach",
-          "name": "Maya Python Debugger: Attach using Process Id",
-          "processId": "${command:pickProcess}"
-        }],
-				"configurationSnippets": [{
-          "label": "Maya Python Debugger: Attach using Process Id",
-          "description": "A debug configuration for attaching to a running maya program.",
-          "body": {
-            "type": "debugpy",
+        "initialConfigurations": [
+          {
+            "type": "maya-debugpy",
             "request": "attach",
-            "name": "Maya Python Debugger: Attach using Process Id",
-            "processId": "${command:pickProcess}"
+            "name": "Maya Python Debugger: Launch Maya",
+            "processId": "^\"\\${command:pickProcess}\""
           }
-        }],
+        ],
+        "configurationSnippets": [
+          {
+            "label": "Maya Python Debugger: Connect using Socket",
+            "description": "A debug configuration for Connect to a running maya program to debugpy over a socket.",
+            "body": {
+              "type": "maya-debugpy",
+              "request": "connect",
+              "name": "Maya Python Debugger: Connect using Socket",
+              "connect": {
+                "host": "localhost",
+                "port": 5678
+              }
+            }
+          },
+          {
+            "label": "Maya Python Debugger: Attach using Process Id",
+            "description": "A debug configuration for attaching to a running maya program by connecting to debugpy over a socket.",
+            "body": {
+              "type": "maya-debugpy",
+              "request": "attach",
+              "name": "Maya Python Debugger: Attach using Process Id",
+              "processId": "^\"\\${command:pickProcess}\""
+            }
+          }
+        ],
         "variables": {
-          "processId": "${command:pickProcess}"
+          "pickProcess": "maya-dev-toolkit.pickLocalProcess"
         }
       }
     ]
   },
-  "extensionDependencies":[
+  "extensionDependencies": [
     "ms-python.python",
     "ms-python.debugpy"
   ],
