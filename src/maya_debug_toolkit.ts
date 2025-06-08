@@ -21,11 +21,11 @@ export class MayaDebugToolkit{
         if (!this.socket || this.socket.closed) {
             // 初始化 Socket 
             let socket = net.createConnection({port:this.commandPort},function(){
-                logger.info(`Maya Port: ${commandPort} 链接成功！`)
-            })
+                logger.info(`Maya Port: ${commandPort} 链接成功！`);
+            });
             socket.on('error', function (error) {
-                logger.info(`Maya Port: ${commandPort} 链接失败！`)
-                logger.info("复制以下代码到 Maya Script Editor （Python）运行\r\n\r\nimport maya.cmds as cmds\r\nif not cmds.commandPort(\":4648\",q=True):cmds.commandPort(n=\":4648\",stp=\"mel\",echoOutput=True)")
+                logger.info(`Maya Port: ${commandPort} 链接失败！`);
+                logger.info("复制以下代码到 Maya Script Editor （Python）运行\r\n\r\nimport maya.cmds as cmds\r\nif not cmds.commandPort(\":4648\",q=True):cmds.commandPort(n=\":4648\",stp=\"mel\",echoOutput=True)");
             });
             socket.on('data', function (data) {
                 logger.info(data.toString());
@@ -64,29 +64,29 @@ else:
         if (err) {
             logger.info(`Failed to write code to temp file ${debugPath}`);
         }
-    })
+    });
     // with open(file_name, 'r') as fff:
     //     exec(compile(fff.read(), file_name, 'exec'))
-    this.sendData(`python(\"with open(r'${debugPath}', 'r') as fff:\\r\\n    exec(compile(fff.read(), r'${debugPath}', 'exec'))\")`)
+    this.sendData(`python(\"with open(r'${debugPath}', 'r') as fff:\\r\\n    exec(compile(fff.read(), r'${debugPath}', 'exec'))\")`);
     };
 
     public sendToMaya(){
         const activeTextEditor = vscode.window.activeTextEditor;
-        if ( (activeTextEditor == undefined)) {
-            logger.info("未获取到当前激活的文档")
+        if ( (activeTextEditor === undefined)) {
+            logger.info("未获取到当前激活的文档");
             return;
         }
-        if ( ! (activeTextEditor.document.languageId == "mayamel" || "python")){
-            logger.info("当前文档类型不是 mel 或 python ")
+        if ( ! (activeTextEditor.document.languageId === "mayamel" || "python")){
+            logger.info("当前文档类型不是 mel 或 python ");
         }
         
         let send_text :string = "";
-        if (activeTextEditor.document.languageId == "mayamel") {
-            send_text = activeTextEditor.document.getText()
+        if (activeTextEditor.document.languageId === "mayamel") {
+            send_text = activeTextEditor.document.getText();
             this.sendData(send_text);
         }
-        else if (activeTextEditor.document.languageId == "python"){
-            this.sendPyTmpFile(activeTextEditor.document.uri)
+        else if (activeTextEditor.document.languageId === "python"){
+            this.sendPyTmpFile(activeTextEditor.document.uri);
         }
     }
 

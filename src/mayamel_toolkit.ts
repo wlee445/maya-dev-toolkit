@@ -1,9 +1,9 @@
 import * as fs from 'fs';
 import * as path from "path";
-import * as readline from "readline"
+import * as readline from "readline";
 import * as vscode from 'vscode';
 
-const TurndownService = require('turndown')
+const TurndownService = require('turndown');
 
 
 export class MayamelCompletionItemProvider implements vscode.CompletionItemProvider{
@@ -14,7 +14,7 @@ export class MayamelCompletionItemProvider implements vscode.CompletionItemProvi
     ){
         this.completion_path = in_completion_path;
         if (! fs.existsSync(this.completion_path)) {
-            console.log(`路径不存在 ${this.completion_path}`)
+            console.log(`路径不存在 ${this.completion_path}`);
             return;
         }
 
@@ -53,7 +53,7 @@ export class MayamelHoverProvider implements vscode.HoverProvider{
     ){
         this.completion_path = in_completion_path;
         if (! fs.existsSync(this.completion_path)) {
-            console.log(`路径不存在 ${this.completion_path}`)
+            console.log(`路径不存在 ${this.completion_path}`);
             return;
         }
     }

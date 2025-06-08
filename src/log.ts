@@ -4,10 +4,10 @@ export class Logger {
     private static instance: Logger;
     private outputChannel:vscode.OutputChannel;
     private constructor() {
-        this.outputChannel = vscode.window.createOutputChannel("Maya Output")
+        this.outputChannel = vscode.window.createOutputChannel("Maya Output");
         const maya_config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration("maya");
         if (maya_config.get<boolean>("log", false)) {
-            this.outputChannel.show()
+            this.outputChannel.show();
         }
         
     }
@@ -21,10 +21,10 @@ export class Logger {
         return this.outputChannel;
     }
     public info(str:string) {
-        if (str == "\n") {
-            return
+        if (str === "\n") {
+            return;
         }
-        this.outputChannel.appendLine(str.replace(/\u0000/g,"").replaceAll("\n\n",""))
+        this.outputChannel.appendLine(str.replace(/\u0000/g,"").replaceAll("\n\n",""));
     }
 }
 

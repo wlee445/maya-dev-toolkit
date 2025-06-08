@@ -5,7 +5,7 @@ import * as path from "path";
 import * as mayamel from "./mayamel_toolkit";
 import * as maya_debug from "./maya_debug_toolkit";
 import * as log from "./log";
-import * as maya_setting from "./maya_setting"
+import * as maya_setting from "./maya_setting";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -40,20 +40,20 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.languages.registerHoverProvider(
 		"mayamel",
 		new mayamel.MayamelHoverProvider(code_completion_path)
-	)
+	);
 	// 注册 logger 
 	let logger = log.Logger.getInstance();
 	context.subscriptions.push(logger.get_outputChannel());
 
 	// 注册 Send To Maya 命令 
-	let mayaDebugToolkit = new maya_debug.MayaDebugToolkit(code_command_port)
+	let mayaDebugToolkit = new maya_debug.MayaDebugToolkit(code_command_port);
 	let disposable = vscode.commands.registerCommand('maya-dev-toolkit.SendToMaya', () => {
-		mayaDebugToolkit.sendToMaya()
+		mayaDebugToolkit.sendToMaya();
 	});
 	context.subscriptions.push(disposable);
 	// 注册 Maya Python Debugger 命令 
 	disposable = vscode.commands.registerCommand('maya-dev-toolkit.MayaPythonDebugger', () => {
-		mayaDebugToolkit.debugAttachProcessId()
+		mayaDebugToolkit.debugAttachProcessId();
 	});
 	context.subscriptions.push(disposable);
 	// 注册 Maya Python Debugger configuration 命令
